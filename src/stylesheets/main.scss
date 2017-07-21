@@ -1,0 +1,31 @@
+body {
+    box-sizing: border-box !important;
+    // background-color: rgba(black, 0.5) !important;
+    width:80%;
+    margin: auto;
+}
+
+.game-top {
+    display: flex;
+    flex-direction: row;
+
+    .piles {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .freecells {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: row;
+
+    .column {
+        display: flex;
+        flex-direction: column;
+    }
+}

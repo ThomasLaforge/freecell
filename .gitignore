@@ -1,0 +1,8 @@
+/node_modules/
+.sass-cache
+.idea
+npm-debug.log
+/dist/
+typings/*
+!typings/ext.d.ts
+*.orig
