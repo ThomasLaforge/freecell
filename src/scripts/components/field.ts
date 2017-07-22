@@ -1,8 +1,10 @@
 import { column } from './column'
 
+// <column :cards="columns[0].cards"/>
+
 let template = `
 <div class="field">
-    <column v-for="(col, i) in columns" :key="i" :cards="col.cards"/>
+    <column v-for="(col, i) in columns" :key="i" :column="col"/>
 </div>
 `
 

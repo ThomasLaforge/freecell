@@ -8,7 +8,7 @@ export enum CardColor {
 }
 
 export enum CardFamily {
-    Diamond,
+    Diam,
     Spade,
     Heart,
     Club
@@ -19,6 +19,24 @@ export function getFamilyChar(family: CardFamily) : string {
     // return chars[family]
     let familyName = CardFamily[family].toLowerCase()
     return familyName[0]
+}
+
+export function getFamilySymbole(family: CardFamily) : string {
+    // let chars = ['d', 's', 'h', 'c'];
+    // return chars[family]
+    return '&' + CardFamily[family].toLowerCase() + 's;'
+}
+
+export function getColorFromFamily(family: CardFamily){
+    return (family === CardFamily.Heart || family === CardFamily.Diam) ? CardColor.Red : CardColor.Black
+}
+
+export function colorTextLowerCase(color: CardColor){
+    return CardColor[color].toLowerCase()
+}
+
+export function getInversedColor(color: CardColor){
+    return (color + 1) % 2
 }
 
 /*

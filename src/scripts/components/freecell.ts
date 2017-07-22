@@ -1,11 +1,13 @@
+import { card } from './card'
+
 let template = `
 <div class="freecell">
-    {{ freecell }}
+    <card v-if="card" :card="card" />
 </div>
 `
 
 export const freecell = {
-    props : ['freecell'],
+    props : ['card'],
     template : template,
     data: function(){
         return {
@@ -14,6 +16,7 @@ export const freecell = {
     computed : {
     },
     components : {
+        card
     },
     methods: {
     }

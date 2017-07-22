@@ -1,5 +1,7 @@
 import { Card } from './Card'
 import { Deck } from './Deck'
+import { Selection } from './Selection'
+import { getInversedColor } from './Freecell'
 
 export class Column {
 
@@ -33,6 +35,25 @@ export class Column {
         else{
             console.log('Tentative de suppression d\'une carte qui n\'est pas présente dans la main');
         }
+    }
+
+    getSelectionFromCard(card: Card){
+        let cardPosition = this.cards.indexOf(card)
+        let cardAndCardsUnder = this.cards.slice(cardPosition);
+        return new Selection(cardAndCardsUnder);
+    }
+
+    isCardDraggable( card: Card ) {
+        let selection = this.getSelectionFromCard(card);
+        return selection.isDraggable();
+    }
+
+    isCardDropable( card: Card ){
+        return card.value + 1 === this.bottomCard.value && card.color === getInversedColor(this.bottomCard.color)
+    }
+
+    get bottomCard(){
+        return this.cards[this.length() - 1]
     }
 
     public get cards(): Card[] {

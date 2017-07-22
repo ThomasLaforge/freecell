@@ -10,7 +10,7 @@ let template = `
         </div>
         
         <div class="freecells">
-            <freecell v-for="(f, i) in game.freeCells.freeCells" :freecell="f" :key="i" />
+            <freecell v-for="(f, i) in game.freeCells.freeCells" :freecell="f.card" :key="i" />
         </div>
     </div>
 

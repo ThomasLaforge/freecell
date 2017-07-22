@@ -3,7 +3,7 @@ import { Card } from './Card'
 
 export class Deck {
 
-    private _cards : Array<Card>
+    private _cards : Card[]
 
     constructor( cards: Card[] = []) {
         this.cards = cards;
@@ -13,7 +13,8 @@ export class Deck {
                     this.cards.push( new Card(value, color) )
                 }
             }
-            this.shuffle()
+            // this.shuffle()
+            this.cards.reverse()
         }
     }
 

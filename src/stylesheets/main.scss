@@ -1,6 +1,8 @@
+$freecell_height : 120px;
+
 body {
     box-sizing: border-box !important;
-    // background-color: rgba(black, 0.5) !important;
+    background-color: rgba(green, 1);
     width:80%;
     margin: auto;
 }
@@ -8,24 +10,63 @@ body {
 .game-top {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    width:100%;
+    margin-bottom: 25px;
 
     .piles {
-        display: flex;
-        flex-direction: row;
+        font-size: 25px;
+        line-height: $freecell_height;
+
+        .pile-empty-red {
+            color: red;
+        }
+
+        .pile-empty-black {
+            color: black;
+        }
     }
 
-    .freecells {
+    .piles, .freecells {
         display: flex;
         flex-direction: row;
+        justify-content: space-between;
+        width:45%;
+
+        .pile, .freecell {
+            width:22%;
+            height: $freecell_height;
+            text-align: center;
+            background-color: #fff;
+            border: 1px solid black;
+        }
     }
 }
 
 .field {
     display: flex;
     flex-direction: row;
+    width:100%;
 
     .column {
+        $nb_col : 8;
+        width: 100% / $nb_col;
+        text-align: center;
+
         display: flex;
         flex-direction: column;
+        position: relative;
+
+        @for $i from 0 through 52 {
+            .card:nth-child(#{$i + 1}) {
+                top : $i * 40px;
+                z-index: $i;
+            }
+        }
+
+        .card {
+            position: absolute;
+            height: $freecell_height;
+        }
     }
 }

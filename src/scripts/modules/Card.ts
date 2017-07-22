@@ -1,4 +1,4 @@
-import { CardColor, CardFamily, getFamilyChar } from './Freecell'
+import { CardColor, CardFamily, getFamilyChar, getColorFromFamily, colorTextLowerCase } from './Freecell'
 
 export class Card {
 
@@ -10,8 +10,12 @@ export class Card {
         this._value = value;
 	}
 
-	color(){
-    	return (this.family === CardFamily.Heart || this.family === CardFamily.Diamond) ? CardColor.Red : CardColor.Black
+	get color(){
+    	return getColorFromFamily(this.family)
+	}
+
+	get colorTextLowerCase(){
+		return colorTextLowerCase(this.color)
 	}
 
 	getPath(){
