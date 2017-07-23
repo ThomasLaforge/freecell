@@ -43,12 +43,14 @@ export class Game {
 
         
     play(card: Card, from?: Pile | FreeCell | Column, to?: Pile | FreeCell | Column){
-        let pile = this.piles.getPile(card.family)
-        let pileValue = pile.value
-        if(card.value === pileValue + 1){
-            pile.addCard(card);
-        }
+        // let pile = this.piles.getPile(card.family)
+        // let pileValue = pile.value
+        // if(card.value === pileValue + 1){
+        //     pile.addCard(card);
+        // }
         // this.removeCards(card);
+        from.removeCards(card);
+        to.addCard(card)
     }
 
     removeCards(c: Card | Card[], from: Pile | FreeCell | Column){

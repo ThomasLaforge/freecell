@@ -1,4 +1,6 @@
-export const NB_COLUMN = 8; 
+import { Card } from './Card'
+
+export const NB_COLUMN = 8;
 export const NB_PILE = 4; 
 export const NB_FREE_CELLS = 4; 
 
@@ -37,6 +39,14 @@ export function colorTextLowerCase(color: CardColor){
 
 export function getInversedColor(color: CardColor){
     return (color + 1) % 2
+}
+
+export interface PlayableZone {
+     addCard(card: Card | Card[]): void;
+}
+
+export interface DraggableZone {
+     removeCard(card: Card | Card[]): void;
 }
 
 /*

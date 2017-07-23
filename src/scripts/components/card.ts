@@ -1,5 +1,5 @@
 let template = `
-<div class="card" :draggable="isDraggable">
+<div class="card" :draggable="isDraggable" @dragstart="sendCardDragged">
     <img :draggable="isDraggable" :src="imgPath" v-if="card.value < 11" />
     <div v-if="card.value > 10">{{ card.family }} : {{card.value}}</div>
 </div>
@@ -20,5 +20,8 @@ export const card = {
     components : {
     },
     methods: {
+        sendCardDragged: function(){
+            this.$emit('cardDragged')
+        }
     }
 };

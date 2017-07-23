@@ -1,9 +1,9 @@
 import { Card } from './Card'
 import { Deck } from './Deck'
 import { Selection } from './Selection'
-import { getInversedColor } from './Freecell'
+import { getInversedColor, DraggableZone, PlayableZone } from './Freecell'
 
-export class Column {
+export class Column implements DraggableZone, PlayableZone {
 
     public _cards: Card[]
 
@@ -48,7 +48,7 @@ export class Column {
         return selection.isDraggable();
     }
 
-    isCardDropable( card: Card ){
+    isCardPlayable( card: Card ){
         return card.value + 1 === this.bottomCard.value && card.color === getInversedColor(this.bottomCard.color)
     }
 
