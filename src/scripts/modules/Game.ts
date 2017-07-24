@@ -118,6 +118,12 @@ export class Game {
         return this.field.getNbFree()
     }
 
+    isGameOver(){
+        this.freeCells.freeCells.forEach( freecell => {
+            
+        });
+    }
+
 // Getters / Setters
 	public get field(): Field {
 		return this._field;
