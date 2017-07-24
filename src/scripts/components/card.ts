@@ -1,5 +1,5 @@
 let template = `
-<div class="card" :draggable="isDraggable" @dragstart="sendCardDragged">
+<div class="card" :draggable="isDraggable" @dragstart="sendCardDragged" @dblclick="doubleClick">
     <img :draggable="isDraggable" :src="imgPath" v-if="card.value < 11" />
     <div v-if="card.value > 10">{{ card.family }} : {{card.value}}</div>
 </div>
@@ -22,6 +22,9 @@ export const card = {
     methods: {
         sendCardDragged: function(){
             this.$emit('cardDragged')
+        },
+        doubleClick: function(){
+            console.log('double click on card')
         }
     }
 };

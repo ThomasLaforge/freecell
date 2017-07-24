@@ -1,11 +1,16 @@
 import { Pile } from './Pile'
 import { NB_PILE, CardFamily } from './Freecell'
 
+let initialPiles: Pile[] = [];
+for (let i = 0; i < NB_PILE; i++) {
+    initialPiles.push(new Pile(i))
+}
+
 export class Piles {
 
     private _piles: Pile[]
 
-    constructor(piles = new Array(NB_PILE).fill(new Pile(0))){
+    constructor(piles = initialPiles){
         this.piles = piles
     }
 

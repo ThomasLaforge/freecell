@@ -2,6 +2,8 @@ import { pile } from './pile'
 import { field } from './field'
 import { freecell } from './freecell'
 import { Column } from '../modules/Column'
+import { Pile } from '../modules/Pile'
+import { FreeCell } from '../modules/FreeCells'
 import { Card } from '../modules/Card'
 
 let template = `
@@ -9,16 +11,18 @@ let template = `
     <div class="game-top">
         <div class="piles">
             <pile v-for="(p, i) in game.piles.piles" 
-                :value="p.value" 
-                :family="i" 
-                :key="i" 
+                :pile="p" 
+                :key="i"
+                @addCard="addCardToPile"                
             /> 
         </div>
         
         <div class="freecells">
             <freecell v-for="(f, i) in game.freeCells.freeCells" 
-                :freecell="f.card" 
-                :key="i" 
+                :freeCell="f" 
+                :key="i"
+                @addCard="addCardToFreeCell" 
+                @dragCard="cardDraggedFromFreeCell"
             />
         </div>
     </div>
@@ -26,7 +30,7 @@ let template = `
     <field 
         :columns="game.field.columns" 
         @addCard="addCardToField" 
-        @dragCarg="cardDraggedFromField"
+        @dragCard="cardDraggedFromField"
     />
 </div>
 `
@@ -34,13 +38,14 @@ let template = `
 export const game = {
     props : ['game'],
     template : template,
-    data: function(): { dragStartColumn: Column } {
+    data: function(): { dragStartColumn: Column, cardDraggedFromColumn: Card, dragStartFreeCell: FreeCell } {
         return {
-            dragStartColumn: null
+            dragStartColumn: null,
+            dragStartFreeCell: null,
+            cardDraggedFromColumn: null
         }
     },
     computed : {
-
     },
     components : {
         pile,
@@ -49,18 +54,39 @@ export const game = {
     },
     methods: {
         cardDraggedFromField: function(card: Card, col: Column){
-            console.log('cardDragged on game')
+            console.log('cardDragged from field')
             this.dragStartColumn = col;
+            this.cardDraggedFromColumn = card
         },
-        cardDroppedFromField: function(){
-            this.dragStartColumn = null;
+        cardDraggedFromFreeCell: function(freeCell: FreeCell){
+            console.log('cardDragged from freeCell', freeCell)
+            this.dragStartFreeCell = freeCell;
         },
-        addCardToField(column: Column, card: Card){
-            console.log('if is drag start column')
-            if(this.dragStartColumn){
-                console.log('game.play')
-                this.game.play(card, this.dragStartColumn, column);
+        addCardToField(column: Column){
+            console.log('UI:game:addCardToField',this.dragStartColumn || this.dragStartFreeCell, this.dragStartColumn, this.dragStartFreeCell, column, this.cardDraggedFromColumn)
+            if(this.dragStartColumn || this.dragStartFreeCell ){
+                this.game.play(this.cardDraggedFromColumn, this.dragStartColumn || this.dragStartFreeCell, column);
+                this.resetDraggedElt()
             }
+        },
+        addCardToFreeCell(freeCell: FreeCell, card: Card){
+            console.log('UI:game:addCardToFreeCell',this.dragStartColumn || this.dragStartFreeCell, this.dragStartColumn, this.dragStartFreeCell, freeCell, card)
+            if(this.dragStartColumn || this.dragStartFreeCell){
+                this.game.play(card, this.dragStartColumn || this.dragStartFreeCell, freeCell);
+                this.resetDraggedElt()         
+            }
+        },
+        addCardToPile(pile: Pile){
+            console.log('UI:game:addCardToFreeCell',this.dragStartColumn || this.dragStartFreeCell, this.dragStartColumn, this.dragStartFreeCell, pile, this.cardDraggedFromColumn)            
+            if(this.dragStartColumn || this.dragStartFreeCell){
+                this.game.play(this.cardDraggedFromColumn, this.dragStartColumn || this.dragStartFreeCell, pile);
+                this.resetDraggedElt()         
+            }
+        },
+        resetDraggedElt(){
+            this.dragStartColumn = null;                
+            this.dragStartFreeCell = null;
+            this.cardDraggedFromColumn = null;
         }
     }
 };

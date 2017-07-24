@@ -26,6 +26,10 @@ export class Field {
         return this.columns.length
     }
 
+    getNbFree(){
+        return this.columns.filter( c => { return c.length() === 0 }).length
+    }
+
     public get columns(){
         return this._columns
     }

@@ -1,13 +1,22 @@
 import { card } from './card'
+import { Card } from '../modules/Card'
 
 let template = `
-<div class="freecell">
-    <card v-if="card" :card="card" />
+<div class="freecell"
+    @dragover.prevent
+    @drop="onDropCard"
+    @dragenter="onDragEnterCard"
+>    
+    <card v-if="freeCell.card" 
+        :card="freeCell.card"
+        :isDraggable="true"
+        @cardDragged="sendCardDragged(freeCell.card)"
+    />
 </div>
 `
 
 export const freecell = {
-    props : ['card'],
+    props : ['freeCell'],
     template : template,
     data: function(){
         return {
@@ -19,5 +28,14 @@ export const freecell = {
         card
     },
     methods: {
+        onDropCard: function(e: Event){
+            this.$emit('addCard', this.freeCell)
+        },
+        onDragEnterCard: function(){
+            // console.log('dragenter', col)
+        },
+        sendCardDragged: function(){
+            this.$emit('dragCard', this.freeCell)
+        }
     }
 };

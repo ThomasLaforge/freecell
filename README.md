@@ -1,3 +1,5 @@
-# Vue Typescript Project Model
+# Vue Typescript Freecell
 
-Model to create front end app using typescript and vue.
+Implementation of freecell using vue and typescript
+
+Still WIP

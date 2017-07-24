@@ -31,16 +31,11 @@ export const field = {
     methods: {
         dragCard: function(card: Card, col: Column){ 
             this.draggedCard = card
-            this.$emit('dragCarg', card, col)
+            this.$emit('dragCard', card, col)
         },
         drop: function(col: Column){
-            if(this.draggedCard){
-                console.log('drop', col)
-                if(col.isCardPlayable(this.draggedCard)){
-                    this.$emit('addCard', col, this.draggedCard)
-                }
-                this.draggedCard = null;
-            }
+            console.log('drop', col)
+            this.$emit('addCard', col)
         },
         dragenter: function(col: Column){
             console.log('dragenter', col)

@@ -3,33 +3,41 @@ import { Card } from '../modules/Card'
 import { card } from './card'
 
 let template = `
-<div class="pile">
-    <div v-if="value > 0">
-        <card :card="card"/>
+<div class="pile"
+    @dragover.prevent
+    @drop="onDropCard"
+    @dragenter="onDragEnterCard"
+>
+    <div v-if="pile && pile.value > 0">
+        <card :card="card" :isDraggable="false" />
     </div>
-    <div v-if="value === 0" v-html="familySymbole" :class="familyColorClass" />
+    <div v-if="pile && pile.value === 0" v-html="familySymbole" :class="familyColorClass" />
 
 </div>
 `
 
 export const pile = {
-    props : ['value', 'family'],
+    props : ['pile'],
     template : template,
     data: function(){
         return {
-            card: new Card(this.value, this.family)
         }
     },
     computed : {
-        familySymbole : function(){ return getFamilySymbole(this.family) },
+        familySymbole : function(){ return getFamilySymbole(this.pile.family) },
         familyColorClass : function(){ return 'pile-empty-' + this.card.colorTextLowerCase },
-        imgPath: function(){
-            return '../../images/cartes/' + this.card.getPath() + '.jpeg' 
-        }
+        card: function() { return new Card(this.pile.value, this.pile.family) }
+        
     },
     components : {
         card
     },
     methods: {
+        onDropCard: function(e: Event){
+            this.$emit('addCard', this.pile)
+        },
+        onDragEnterCard: function(){
+            // console.log('dragenter', col)
+        },
     }
 };

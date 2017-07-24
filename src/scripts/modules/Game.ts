@@ -44,17 +44,61 @@ export class Game {
 
         
     play(card: Card, from?: FreeCell | Column, to?: Pile | FreeCell | Column){
-        // let pile = this.piles.getPile(card.family)
-        // let pileValue = pile.value
-        // if(card.value === pileValue + 1){
-        //     pile.addCard(card);
-        // }
-        // this.removeCards(card);
-        let cards = from instanceof Column ? from.getSelectionFromCard(card).cards : [card]
-        if(cards.length === 1 || to instanceof Column){
-            from.removeCard(cards);
-            to.addCard(cards)
+        /**
+         * Controls
+         */
+        console.log('Game:play', card, from, to)
+        let cards = from instanceof Column ? from.getSelectionFromCard(card).cards : [ from.card ]
+        console.log('Game:play - cards', cards)
+
+        /**
+         * liste des cas
+         * 
+         * card: card or selection ---> Selection must be in order / valid
+         * from :   - freecell : one card
+         *          - Column : multiple card
+         * to :     - Pile : one card
+         *          - Column: mulitple card with card to put is one less value and not same color than bottom card of column
+         *          - Freecell: one card
+         * 
+         */
+
+        let fromOk = cards.length === 1 || (to instanceof Column && new Selection(cards).isDraggable())
+        let toPileOk = false;
+        let toFreeCellOk = false;
+        let toColumnOk = false;
+
+        if(to instanceof Pile){
+            let card = cards[0]
+            toPileOk = card.value === to.value + 1 && card.family === to.family         
         }
+        else if(to instanceof FreeCell){
+            toFreeCellOk = !to.card;
+        }
+        else if(to instanceof Column){
+            let nbCardsToDrag = cards.length
+            let selectionDragged = new Selection(cards)
+            let topCard = cards[0]
+            let dragPossible = nbCardsToDrag <= this.getNbFreeSpacesFromFreecells() + 1
+            // TODO : Need to care of field free spaces
+            toColumnOk = topCard.color !== to.bottomCard.color && topCard.value === to.bottomCard.value - 1 && dragPossible;
+        }
+
+        let toOk = toPileOk || toFreeCellOk || toColumnOk;
+        let controlsOk = fromOk && toOk;
+
+        if( controlsOk ) {
+            try {
+                to.addCard(cards)
+                from.removeCard(cards);
+            }
+            catch(err){
+                console.log('error on play')
+                controlsOk = false;
+            }
+        }
+
+        return controlsOk
     }
 
     removeCards(c: Card | Card[], from: Pile | FreeCell | Column){
@@ -64,7 +108,15 @@ export class Game {
         })
     }
 
-    moveCard(card: Card, to: Column){}
+    getNbFreeSpaces(){
+        return this.getNbFreeSpacesFromFreecells() + this.getNbFreeSpacesFromField();
+    }
+    getNbFreeSpacesFromFreecells(){
+        return this.freeCells.getNbFree() 
+    }
+    getNbFreeSpacesFromField(){
+        return this.field.getNbFree()
+    }
 
 // Getters / Setters
 	public get field(): Field {
