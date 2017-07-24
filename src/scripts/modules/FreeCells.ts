@@ -15,7 +15,7 @@ export class FreeCell implements DraggableZone, PlayableZone {
         })
     }
 
-    removeCard( card:Card ) {
+    removeCard( card:Card | Card[]) {
         this.card = null;
     }
 }

@@ -6,6 +6,7 @@
     import { Piles }        from './Piles';
     import { FreeCells, FreeCell }    from './FreeCells';
     import { Column }       from './Column';
+    import { Selection }       from './Selection';
     import { Timer }        from './Timer';
     import { NB_COLUMN, NB_FREE_CELLS, NB_PILE } from './Freecell';
     import { HighScores }   from './HighScores'
@@ -42,15 +43,18 @@ export class Game {
     }
 
         
-    play(card: Card, from?: Pile | FreeCell | Column, to?: Pile | FreeCell | Column){
+    play(card: Card, from?: FreeCell | Column, to?: Pile | FreeCell | Column){
         // let pile = this.piles.getPile(card.family)
         // let pileValue = pile.value
         // if(card.value === pileValue + 1){
         //     pile.addCard(card);
         // }
         // this.removeCards(card);
-        from.removeCards(card);
-        to.addCard(card)
+        let cards = from instanceof Column ? from.getSelectionFromCard(card).cards : [card]
+        if(cards.length === 1 || to instanceof Column){
+            from.removeCard(cards);
+            to.addCard(cards)
+        }
     }
 
     removeCards(c: Card | Card[], from: Pile | FreeCell | Column){

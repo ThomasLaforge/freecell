@@ -27,14 +27,17 @@ export class Column implements DraggableZone, PlayableZone {
         })
     }
 
-    removeCard( card:Card ) {
-        let pos = this.cards.indexOf( card );
-        if(pos > -1){
-            this.cards.splice(pos, 1);
-        }
-        else{
-            console.log('Tentative de suppression d\'une carte qui n\'est pas présente dans la main');
-        }
+    removeCard( c:Card | Card[] ) {
+        let cards = Array.isArray(c) ? c : [c]
+        cards.forEach( card => {
+            let pos = this.cards.indexOf( card );
+            if(pos > -1){
+                this.cards.splice(pos, 1);
+            }
+            else{
+                console.log('Tentative de suppression d\'une carte qui n\'est pas présente dans la main');
+            }
+        })
     }
 
     getSelectionFromCard(card: Card){
