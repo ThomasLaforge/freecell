@@ -8,6 +8,8 @@ import { Card } from '../modules/Card'
 
 let template = `
 <div class="game">
+    <div>Game over : {{ game.isGameOver() }}</div>
+
     <div class="game-top">
         <div class="piles">
             <pile v-for="(p, i) in game.piles.piles" 
@@ -32,6 +34,7 @@ let template = `
         @addCard="addCardToField" 
         @dragCard="cardDraggedFromField"
     />
+
 </div>
 `
 

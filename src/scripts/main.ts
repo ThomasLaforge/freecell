@@ -5,7 +5,6 @@
     import { Game } from './modules/Game'
     let g = new Game();
     g.init();
-    console.log('deck : ', g.deck, g.field)
 // Game Config
 
 // Vue

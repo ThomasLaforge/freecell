@@ -119,9 +119,25 @@ export class Game {
     }
 
     isGameOver(){
-        this.freeCells.freeCells.forEach( freecell => {
+        let isGameOver = true;
+        // free cell available
+        this.freeCells.freeCells.forEach( f => {
+            if(!f.card) {
+                isGameOver = false;
+                return
+            }
+        })
+        
+        // Can play free cell on field
+
+        // Can play free cell on pile
+        if(isGameOver){
             
-        });
+        }
+        // Can play field on free cell
+        // Can play field on pile
+
+        return isGameOver
     }
 
 // Getters / Setters

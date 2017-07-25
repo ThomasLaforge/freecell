@@ -1,6 +1,6 @@
 let template = `
 <div class="card" :draggable="isDraggable" @dragstart="sendCardDragged" @dblclick="doubleClick">
-    <img :draggable="isDraggable" :src="imgPath" widht="80px" height="160px"/>
+    <img :draggable="isDraggable" :src="imgPath" widht="50px" height="100px"/>
 </div>
 `
 

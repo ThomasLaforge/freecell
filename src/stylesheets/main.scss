@@ -7,6 +7,11 @@ body {
     margin: auto;
 }
 
+.game{
+    display: flex;
+    flex-direction: column;
+}
+
 .game-top {
     display: flex;
     flex-direction: row;
@@ -47,6 +52,7 @@ body {
     display: flex;
     flex-direction: row;
     width:100%;
+    flex:1;
 
     .column {
         $nb_col : 8;
