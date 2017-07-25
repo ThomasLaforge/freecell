@@ -5,10 +5,11 @@
     import { Game } from './modules/Game'
     let g = new Game();
     g.init();
+    let currentGame = g.gameStateManager.currentSlot
 // Game Config
 
 // Vue
-    import { game }       from './components/game';
+    import { game } from './components/game';
 
 // VueIt8n
     // import * as VueI18n from 'vue-i18n'
@@ -24,7 +25,7 @@ let app = new Vue({
     el: '#app',
     data: () => {
         return {
-            game: g
+            game: currentGame
         }
     },
     computed: {

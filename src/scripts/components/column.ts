@@ -12,6 +12,7 @@ let template = `
         :card="card"
         :isDraggable="isCardDraggable(card)"
         @cardDragged="sendCardDragged(card)"
+        @cardDoubleCkicked="handleCardDoubleCkicked(card)"
     />
 </div>
 `
@@ -38,6 +39,9 @@ export const column = {
         },
         sendCardDragged: function(card: Card){
             this.$emit('cardDragged', card, this.column)
+        },
+        handleCardDoubleCkicked: function(card: Card){
+            this.$emit('cardDoubleClicked', card)
         }
     }
 };

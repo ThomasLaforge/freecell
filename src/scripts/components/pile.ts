@@ -9,7 +9,10 @@ let template = `
     @dragenter="onDragEnterCard"
 >
     <div v-if="pile && pile.value > 0">
-        <card :card="card" :isDraggable="false" />
+        <card 
+            :card="card"
+            :isDraggable="false" 
+        />
     </div>
     <div v-if="pile && pile.value === 0" v-html="familySymbole" :class="familyColorClass" />
 

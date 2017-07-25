@@ -11,6 +11,7 @@ let template = `
         :column="col"
         @dropCard="drop(col)"
         @cardDragged="dragCard"
+        @cardDoubleClicked="(card) => { handleCardDoubleClicked(card, col) }"
     />
 </div>
 `
@@ -39,6 +40,9 @@ export const field = {
         },
         dragenter: function(col: Column){
             console.log('dragenter', col)
+        },
+        handleCardDoubleClicked(card: Card, col: Column){
+            this.$emit('cardDoubleClicked', card, col)
         }
     }
 };

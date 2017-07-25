@@ -18,6 +18,12 @@ export class Field {
         }
     }
 
+    importFromJson(json: any){
+        this.columns.forEach( (c, i) => {
+
+        })
+    }
+
     getColumn(index: number){
         return this.columns[index]
     }

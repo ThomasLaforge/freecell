@@ -19,12 +19,15 @@ let template = `
             /> 
         </div>
         
+        <button @click="undo" :disabled="!canUndo && 'disabled'">Undo</button>
+
         <div class="freecells">
             <freecell v-for="(f, i) in game.freeCells.freeCells" 
                 :freeCell="f" 
                 :key="i"
                 @addCard="addCardToFreeCell" 
                 @dragCard="cardDraggedFromFreeCell"
+                @cardDoubleClicked="handleDoubleClickedCardOnFreeCell"
             />
         </div>
     </div>
@@ -33,6 +36,7 @@ let template = `
         :columns="game.field.columns" 
         @addCard="addCardToField" 
         @dragCard="cardDraggedFromField"
+        @cardDoubleClicked="handleDoubleClickedCardOnColumn"        
     />
 
 </div>
@@ -49,6 +53,7 @@ export const game = {
         }
     },
     computed : {
+        canUndo: function(){ return this.game.gameStateManager && this.game.gameStateManager.canUndo() }
     },
     components : {
         pile,
@@ -86,10 +91,21 @@ export const game = {
                 this.resetDraggedElt()         
             }
         },
+        handleDoubleClickedCardOnColumn(card: Card, col: Column){
+            console.log('handleDoubleClickedCardOnColumn', card, col)
+            this.game.autoPlay(card, col)
+        },
+        handleDoubleClickedCardOnFreeCell(card: Card, freeCell: FreeCell){
+            console.log('handleDoubleClickedCardOnFreeCell', card, freeCell)
+            this.game.autoPlay(card, freeCell)            
+        },
         resetDraggedElt(){
             this.dragStartColumn = null;                
             this.dragStartFreeCell = null;
             this.cardDraggedFromColumn = null;
+        },
+        undo(){
+            this.game.undo();
         }
     }
 };

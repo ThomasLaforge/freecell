@@ -23,7 +23,7 @@ export const card = {
             this.$emit('cardDragged')
         },
         doubleClick: function(){
-            console.log('double click on card')
+            this.$emit('cardDoubleCkicked')
         }
     }
 };

@@ -24,4 +24,8 @@ export class Pile implements PlayableZone {
             }
         })
     }
+
+    isCardPlayable(card: Card){
+        return card.value === this.value + 1 && card.family === this.family
+    }
 }

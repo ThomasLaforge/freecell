@@ -10,7 +10,8 @@ let template = `
     <card v-if="freeCell.card" 
         :card="freeCell.card"
         :isDraggable="true"
-        @cardDragged="sendCardDragged(freeCell.card)"
+        @cardDragged="sendCardDragged"
+        @cardDoubleCkicked="handleCardDoubleCkicked"
     />
 </div>
 `
@@ -36,6 +37,9 @@ export const freecell = {
         },
         sendCardDragged: function(){
             this.$emit('dragCard', this.freeCell)
+        },
+        handleCardDoubleCkicked: function(card: Card){
+            this.$emit('cardDoubleClicked', this.freeCell.card, this.freeCell)
         }
     }
 };

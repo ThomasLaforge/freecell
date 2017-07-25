@@ -52,7 +52,7 @@ export class Column implements DraggableZone, PlayableZone {
     }
 
     isCardPlayable( card: Card ){
-        return card.value + 1 === this.bottomCard.value && card.color === getInversedColor(this.bottomCard.color)
+        return !this.bottomCard || card.value + 1 === this.bottomCard.value && card.color === getInversedColor(this.bottomCard.color)
     }
 
     get bottomCard(){

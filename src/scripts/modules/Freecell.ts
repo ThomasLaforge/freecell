@@ -1,5 +1,6 @@
 import { Card } from './Card'
 
+export const MAX_SAVE_SLOTS = 10000
 export const NB_COLUMN = 8;
 export const NB_PILE = 4; 
 export const NB_FREE_CELLS = 4; 
@@ -47,6 +48,25 @@ export interface PlayableZone {
 
 export interface DraggableZone {
      removeCard(card: Card | Card[]): void;
+}
+
+export interface CardJson {
+    value: number
+    family: number
+}
+
+export interface columnsJson {
+    cards : CardJson[]
+}
+
+export interface FieldJson {
+    columns: columnsJson[]
+}
+
+export interface HistoricLineInterface {
+    start: number,
+    end?: number,
+    tirage: FieldJson
 }
 
 /*

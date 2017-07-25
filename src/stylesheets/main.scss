@@ -59,6 +59,8 @@ body {
         width: 100% / $nb_col;
         text-align: center;
 
+        min-height: 300px;
+
         display: flex;
         flex-direction: column;
         position: relative;

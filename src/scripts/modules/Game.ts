@@ -4,30 +4,33 @@
     import { Field }        from './Field';
     import { Pile }         from './Pile';
     import { Piles }        from './Piles';
+    import { GameStateManager }        from './GameStateManager';
     import { FreeCells, FreeCell }    from './FreeCells';
     import { Column }       from './Column';
     import { Selection }       from './Selection';
     import { Timer }        from './Timer';
     import { NB_COLUMN, NB_FREE_CELLS, NB_PILE } from './Freecell';
-    import { HighScores }   from './HighScores'
+    import { Statistics }   from './Statistics'
 // -------
 
 export class Game {
 
     private _timer: Timer;
     private _deck: Deck;
-    private _highscores: HighScores;
+    private _statistics: Statistics;
     private _field: Field;
     private _piles: Piles;
     private _freeCells: FreeCells;
+    private _gameStateManager: GameStateManager
 
-	constructor(deck = new Deck(), field = new Field(), piles = new Piles(), freeCells = new FreeCells(), timer = new Timer(), autostart = false, highscores = new HighScores() ) {
+	constructor(deck = new Deck(), field = new Field(), piles = new Piles(), freeCells = new FreeCells(), timer = new Timer(), autostart = false, statistics = new Statistics() ) {
         this.deck = deck;
         this.field = field;
         this.piles = piles;
         this.freeCells = freeCells;
-        this.highscores = new HighScores()
+        this.statistics = statistics;
         this.timer = new Timer();
+        this.gameStateManager = new GameStateManager(this)
         if(autostart){ this.start() }
     }
 
@@ -42,6 +45,42 @@ export class Game {
         })
     }
 
+    autoPlay(card: Card, from: Column | FreeCell){
+        // Find where
+        let to: FreeCell | Pile | Column
+
+        // Pile
+        let p = this.piles.getPile(card.family)
+        if(p.isCardPlayable(card)){
+            to = p
+        }
+
+        // Column
+        if(!to){
+            for(let i = 0; i < this.field.columns.length; i++){
+                let col = this.field.columns[i]
+                if(col.isCardPlayable(card)){
+                    to = col
+                    break;
+                }
+            }
+        }
+
+        // FreeCell
+        if(!to){
+            for(let i = 0; i < this.freeCells.freeCells.length; i++){
+                let f = this.freeCells.freeCells[i]
+                if(!f.card){
+                    to = f
+                    break;
+                }
+            }
+        }
+
+        if(to){
+            this.play(card, from, to)
+        }
+    }
         
     play(card: Card, from?: FreeCell | Column, to?: Pile | FreeCell | Column){
         /**
@@ -70,10 +109,10 @@ export class Game {
 
         if(to instanceof Pile){
             let card = cards[0]
-            toPileOk = card.value === to.value + 1 && card.family === to.family         
+            toPileOk = to.isCardPlayable(card)
         }
         else if(to instanceof FreeCell){
-            toFreeCellOk = !to.card;
+            toFreeCellOk = to.isCardPlayable();
         }
         else if(to instanceof Column){
             let nbCardsToDrag = cards.length
@@ -81,7 +120,7 @@ export class Game {
             let topCard = cards[0]
             let dragPossible = nbCardsToDrag <= this.getNbFreeSpacesFromFreecells() + 1
             // TODO : Need to care of field free spaces
-            toColumnOk = topCard.color !== to.bottomCard.color && topCard.value === to.bottomCard.value - 1 && dragPossible;
+            toColumnOk = to.isCardPlayable(topCard) && dragPossible;
         }
 
         let toOk = toPileOk || toFreeCellOk || toColumnOk;
@@ -98,7 +137,13 @@ export class Game {
             }
         }
 
+        this.gameStateManager.addSlot(this)
+
         return controlsOk
+    }
+
+    undo(){
+        this.gameStateManager.undo();
     }
 
     removeCards(c: Card | Card[], from: Pile | FreeCell | Column){
@@ -124,19 +169,52 @@ export class Game {
         this.freeCells.freeCells.forEach( f => {
             if(!f.card) {
                 isGameOver = false;
-                return
             }
         })
         
         // Can play free cell on field
-
-        // Can play free cell on pile
-        if(isGameOver){
-            
+        if(isGameOver) {
+            this.freeCells.freeCells.forEach( f => {
+                this.field.columns.forEach(c => {
+                    if(c.isCardPlayable(f.card)){
+                        isGameOver = false
+                    }
+                })
+            })        
         }
-        // Can play field on free cell
-        // Can play field on pile
+        // Can play free cell on pile
+        if(isGameOver) {
+            this.freeCells.freeCells.forEach( f => {
+                this.piles.piles.forEach(p => {
+                    if(p.isCardPlayable(f.card)){
+                        isGameOver = false
+                    }
+                })
+            })      
+        }
 
+        // Can play field on pile
+        if(isGameOver) {        
+            this.field.columns.forEach(c => {
+                this.piles.piles.forEach(p => {
+                    if( p.isCardPlayable(c.bottomCard) ){
+                        isGameOver = false
+                    }
+                })
+            })
+        }
+        
+        // can play field on field
+        if(isGameOver) {
+            this.field.columns.forEach( cDrag => {
+                this.field.columns.forEach( cDrop => {
+                    if( cDrop.isCardPlayable(cDrag.bottomCard) ){
+                        isGameOver = false
+                    }
+                })
+            })
+        }
+        
         return isGameOver
     }
 
@@ -171,11 +249,17 @@ export class Game {
 	public set deck(value: Deck) {
 		this._deck = value;
 	}
-    public get highscores(): HighScores {
-		return this._highscores;
+    public get statistics(): Statistics {
+		return this._statistics;
 	}
-	public set highscores(value: HighScores) {
-		this._highscores = value;
+	public set statistics(value: Statistics) {
+		this._statistics = value;
+    }
+    public get gameStateManager(): GameStateManager {
+		return this._gameStateManager;
+	}
+	public set gameStateManager(value: GameStateManager) {
+		this._gameStateManager = value;
 	}
 
 //------------------- 

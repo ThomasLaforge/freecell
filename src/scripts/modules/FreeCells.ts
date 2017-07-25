@@ -20,6 +20,10 @@ export class FreeCell implements DraggableZone, PlayableZone {
     removeCard( card:Card | Card[]) {
         this.card = null;
     }
+
+    isCardPlayable(){
+        return !this.card
+    }
 }
 
 let initialFreeCells: FreeCell[] = [];
