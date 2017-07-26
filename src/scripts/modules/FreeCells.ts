@@ -7,7 +7,7 @@ export class FreeCell implements DraggableZone, PlayableZone {
     constructor(card: Card = null){
         this.card = card
     }
-
+    
     addCard(c:Card | Card[]){
         console.log('FreeCell:addCard', c)
         let cards = Array.isArray(c) ? c : [c]

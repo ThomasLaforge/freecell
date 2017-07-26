@@ -18,6 +18,10 @@ export class Field {
         }
     }
 
+    getNbColumnEmpty(){
+        return this.columns.filter( c => c.isEmpty() ).length
+    }
+
     importFromJson(json: any){
         this.columns.forEach( (c, i) => {
 

@@ -21,7 +21,7 @@ export class Game {
     private _field: Field;
     private _piles: Piles;
     private _freeCells: FreeCells;
-    private _gameStateManager: GameStateManager
+    private _gameStateManager: GameStateManager;
 
 	constructor(deck = new Deck(), field = new Field(), piles = new Piles(), freeCells = new FreeCells(), timer = new Timer(), autostart = false, statistics = new Statistics() ) {
         this.deck = deck;
@@ -30,7 +30,7 @@ export class Game {
         this.freeCells = freeCells;
         this.statistics = statistics;
         this.timer = new Timer();
-        this.gameStateManager = new GameStateManager(this)
+        // this.gameStateManager = new GameStateManager(this)
         if(autostart){ this.start() }
     }
 
@@ -43,6 +43,33 @@ export class Game {
         this.deck.cards.forEach( (card, i) => {
             this.field.getColumn( i % this.field.getNbColumn() ).addCard( card )
         })
+    }
+
+    autoFillPiles(){
+        let changed = true; 
+
+        while(changed && this.gameStillPlayable() ){
+            changed = false
+
+            this.freeCells.freeCells.forEach( f => {
+                if(f.card && this.piles.getPile(f.card.family).value === f.card.value - 1){
+                    let played = this.play(f.card, f, this.piles.getPile(f.card.family))
+                    if(played){
+                        changed = true;
+                    }
+                }
+            })
+
+            this.field.columns.forEach( c => {
+                if(c.bottomCard && this.piles.getPile(c.bottomCard.family).value === c.bottomCard.value - 1){
+                    let played = this.play(c.bottomCard, c, this.piles.getPile(c.bottomCard.family))
+                    if(played){
+                        changed = true;
+                    }
+                }
+            })
+        }
+
     }
 
     autoPlay(card: Card, from: Column | FreeCell){
@@ -118,7 +145,7 @@ export class Game {
             let nbCardsToDrag = cards.length
             let selectionDragged = new Selection(cards)
             let topCard = cards[0]
-            let dragPossible = nbCardsToDrag <= this.getNbFreeSpacesFromFreecells() + 1
+            let dragPossible = nbCardsToDrag <= ( this.getNbFreeSpacesFromFreecells() + 1 ) * Math.pow(2, to.isEmpty() ? this.getNbColumnEmpty() - 1 : this.getNbColumnEmpty() )
             // TODO : Need to care of field free spaces
             toColumnOk = to.isCardPlayable(topCard) && dragPossible;
         }
@@ -137,14 +164,16 @@ export class Game {
             }
         }
 
-        this.gameStateManager.addSlot(this)
+        // this.gameStateManager.addSlot(this)
+
+        this.autoFillPiles()
 
         return controlsOk
     }
 
-    undo(){
-        this.gameStateManager.undo();
-    }
+    // undo(){
+    //     this.gameStateManager.undo();
+    // }
 
     removeCards(c: Card | Card[], from: Pile | FreeCell | Column){
         let cards = Array.isArray(c) ? c : [c]
@@ -161,6 +190,9 @@ export class Game {
     }
     getNbFreeSpacesFromField(){
         return this.field.getNbFree()
+    }
+    getNbColumnEmpty(){
+        return this.field.getNbColumnEmpty()
     }
 
     isGameOver(){
@@ -216,6 +248,14 @@ export class Game {
         }
         
         return isGameOver
+    }
+
+    isWon(){
+        return this.field.columns.filter(c => { return c.length() !== 0 }).length === 0 && this.freeCells.freeCells.filter( f => { return !!f.card }).length === 0
+    }
+
+    gameStillPlayable(){
+        return !this.isGameOver() && !this.isWon()
     }
 
 // Getters / Setters

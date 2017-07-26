@@ -9,6 +9,7 @@ import { Card } from '../modules/Card'
 let template = `
 <div class="game">
     <div>Game over : {{ game.isGameOver() }}</div>
+    <div>Game is won : {{ game.isWon() }}</div>
 
     <div class="game-top">
         <div class="piles">
