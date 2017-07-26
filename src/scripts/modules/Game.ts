@@ -111,20 +111,25 @@ export class Game {
         }
     }
         
-    play(card: Card, from: Pile | FreeCell | Column, to: Pile | FreeCell | Column, undo = false){
+    play(card: Card | Card[], from: Pile | FreeCell | Column, to: Pile | FreeCell | Column, undo = false){
         /**
          * Controls
          */
         console.log('Game:play', card, from, to)
         let cards;
-        if(from instanceof Column){
-            cards = from.getSelectionFromCard(card).cards 
+        if(Array.isArray(card)){
+            cards = card
         }
-        else if(from instanceof FreeCell){
-            cards = [ from.card ]
-        }
-        else {
-            cards = [ new Card(from.value, from.family) ]
+        else{
+            if(from instanceof Column){
+                cards = from.getSelectionFromCard(card).cards 
+            }
+            else if(from instanceof FreeCell){
+                cards = [ from.card ]
+            }
+            else {
+                cards = [ new Card(from.value, from.family) ]
+            }
         }
         // console.log('Game:play - cards', cards)
 
@@ -169,7 +174,8 @@ export class Game {
                 to.addCard(cards)
                 from.removeCard(cards);
                 if(!undo) {
-                    this.gameStateManager.addSlot(from, to)
+                    console.log('cards', cards, cards.length, cards.length > 1 && cards)
+                    this.gameStateManager.addSlot(from, to, cards.length > 1 && cards )
                     this.autoFillPiles()
                 }
             }

@@ -1,4 +1,5 @@
 import { Game } from './Game'
+import { Card } from './Card'
 import { Pile } from './Pile'
 import { FreeCell } from './FreeCells'
 import { Column } from './Column'
@@ -11,8 +12,10 @@ export class Operation {
     private to: Column | FreeCell | Pile;
     private toChar: string;
     private game: Game;
+    private cards: Card[];
 
-    constructor(game: Game, from: Column | FreeCell | Pile, to: Column | FreeCell | Pile ){
+    constructor(game: Game, from: Column | FreeCell | Pile, to: Column | FreeCell | Pile, cards?: Card[] ){
+        this.cards = cards;
         this.game = game;
         this.from = from;
         this.fromChar = this.getOperationChar(from);
@@ -25,7 +28,7 @@ export class Operation {
     }
 
     getReverseOperation(){
-        return new Operation(this.game, this.to, this.from)
+        return new Operation(this.game, this.to, this.from, this.cards)
     }
     
     getOperationChar( where: Column | FreeCell | Pile ) : string {
@@ -45,7 +48,6 @@ export class Operation {
     getObjectFromOperationChar(char: string) : Column | FreeCell | Pile {
         let charCode = char.charCodeAt(0);
         let index;
-        console.log('charCode', charCode)
         if(charCode < 65){
             index = charCode - 49
             return this.game.field.getColumn(index)
@@ -61,7 +63,7 @@ export class Operation {
     }
 
     exec(){
-        return this.game.play(this.from.getPlayableCard(), this.from, this.to, true)
+        return this.game.play(this.cards || this.from.getPlayableCard(), this.from, this.to, true)
     }
 
 }
@@ -76,9 +78,8 @@ export class GameStateManager {
         this.slots = []
     }
 
-    addSlot(from: Pile | Column | FreeCell, to: Column | FreeCell | Pile){
-        this.slots.push(new Operation(this.game, from, to));
-        console.log('new operation', this.slots[this.slots.length - 1].getOperationCode())
+    addSlot(from: Pile | Column | FreeCell, to: Column | FreeCell | Pile, cards?: Card[]){
+        this.slots.push(new Operation(this.game, from, to, cards));
     }
     addOperation(operation: Operation){
         this.slots.push(operation)
@@ -93,7 +94,6 @@ export class GameStateManager {
             let previousOperation = this.slots.pop()
             let undoOperation = previousOperation.getReverseOperation()
             if(!undoOperation.exec()){
-                console.log('roll back undo')
                 this.addOperation(previousOperation)
             }
         }
