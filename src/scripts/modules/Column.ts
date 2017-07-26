@@ -13,7 +13,11 @@ export class Column implements DraggableZone, PlayableZone {
 
         // States of arrays : deck and discard
     isEmpty(){
-        return this.cards.length <= 0;
+        return this.cards.length === 0;
+    }
+
+    isNotEmpty(){
+        return !this.isEmpty()
     }
 
     length(){
@@ -57,6 +61,10 @@ export class Column implements DraggableZone, PlayableZone {
 
     get bottomCard(){
         return this.cards[this.length() - 1]
+    }
+
+    getPlayableCard(){
+        return this.bottomCard
     }
 
     public get cards(): Card[] {

@@ -9,11 +9,9 @@ export class FreeCell implements DraggableZone, PlayableZone {
     }
     
     addCard(c:Card | Card[]){
-        console.log('FreeCell:addCard', c)
         let cards = Array.isArray(c) ? c : [c]
         cards.forEach( card => {
             this.card = card;
-            console.log('card replaced', card, this.card)
         })
     }
 
@@ -23,6 +21,10 @@ export class FreeCell implements DraggableZone, PlayableZone {
 
     isCardPlayable(){
         return !this.card
+    }
+
+    getPlayableCard(){
+        return this.card
     }
 }
 

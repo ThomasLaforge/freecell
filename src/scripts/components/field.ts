@@ -35,11 +35,11 @@ export const field = {
             this.$emit('dragCard', card, col)
         },
         drop: function(col: Column){
-            console.log('drop', col)
+            // console.log('drop', col)
             this.$emit('addCard', col)
         },
         dragenter: function(col: Column){
-            console.log('dragenter', col)
+            // console.log('dragenter', col)
         },
         handleCardDoubleClicked(card: Card, col: Column){
             this.$emit('cardDoubleClicked', card, col)

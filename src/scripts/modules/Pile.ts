@@ -1,8 +1,8 @@
 import { Card } from './Card'
-import { PlayableZone } from './Freecell'
+import { PlayableZone, DraggableZone } from './Freecell'
 import { CardFamily } from './Freecell'
 
-export class Pile implements PlayableZone {
+export class Pile implements PlayableZone, DraggableZone {
 
     public value: number;
     public family: CardFamily;
@@ -16,7 +16,6 @@ export class Pile implements PlayableZone {
         let card = Array.isArray(c) ? c : [c]
         card.forEach( card => {
             if(card.value === this.value + 1){
-                console.log('add on pile')
                 this.value = card.value
             }
             else {
@@ -27,5 +26,13 @@ export class Pile implements PlayableZone {
 
     isCardPlayable(card: Card){
         return card.value === this.value + 1 && card.family === this.family
+    }
+
+    getPlayableCard(){
+        return new Card(this.value, this.family)
+    }
+
+    removeCard(card: Card | Card[]){
+        this.value--
     }
 }

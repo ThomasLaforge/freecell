@@ -30,7 +30,7 @@ export class Game {
         this.freeCells = freeCells;
         this.statistics = statistics;
         this.timer = new Timer();
-        // this.gameStateManager = new GameStateManager(this)
+        this.gameStateManager = new GameStateManager(this)
         if(autostart){ this.start() }
     }
 
@@ -88,7 +88,9 @@ export class Game {
                 let col = this.field.columns[i]
                 if(col.isCardPlayable(card)){
                     to = col
-                    break;
+                    if( col.isNotEmpty() ) { 
+                        break; 
+                    }
                 }
             }
         }
@@ -109,13 +111,22 @@ export class Game {
         }
     }
         
-    play(card: Card, from?: FreeCell | Column, to?: Pile | FreeCell | Column){
+    play(card: Card, from: Pile | FreeCell | Column, to: Pile | FreeCell | Column, undo = false){
         /**
          * Controls
          */
         console.log('Game:play', card, from, to)
-        let cards = from instanceof Column ? from.getSelectionFromCard(card).cards : [ from.card ]
-        console.log('Game:play - cards', cards)
+        let cards;
+        if(from instanceof Column){
+            cards = from.getSelectionFromCard(card).cards 
+        }
+        else if(from instanceof FreeCell){
+            cards = [ from.card ]
+        }
+        else {
+            cards = [ new Card(from.value, from.family) ]
+        }
+        // console.log('Game:play - cards', cards)
 
         /**
          * liste des cas
@@ -151,12 +162,16 @@ export class Game {
         }
 
         let toOk = toPileOk || toFreeCellOk || toColumnOk;
-        let controlsOk = fromOk && toOk;
+        let controlsOk = undo || (fromOk && toOk);
 
         if( controlsOk ) {
             try {
                 to.addCard(cards)
                 from.removeCard(cards);
+                if(!undo) {
+                    this.gameStateManager.addSlot(from, to)
+                    this.autoFillPiles()
+                }
             }
             catch(err){
                 console.log('error on play')
@@ -164,16 +179,13 @@ export class Game {
             }
         }
 
-        // this.gameStateManager.addSlot(this)
-
-        this.autoFillPiles()
 
         return controlsOk
     }
 
-    // undo(){
-    //     this.gameStateManager.undo();
-    // }
+    undo(){
+        this.gameStateManager.undo();
+    }
 
     removeCards(c: Card | Card[], from: Pile | FreeCell | Column){
         let cards = Array.isArray(c) ? c : [c]
