@@ -1,10 +1,17 @@
 import { pile } from './pile'
 import { field } from './field'
 import { freecell } from './freecell'
+import { modal } from './modal'
 import { Column } from '../modules/Column'
 import { Pile } from '../modules/Pile'
 import { FreeCell } from '../modules/FreeCells'
 import { Card } from '../modules/Card'
+import { Game } from '../modules/Game'
+import { Deck } from '../modules/Deck'
+import { Piles } from '../modules/Piles'
+import { Field } from '../modules/Field'
+import { Timer } from '../modules/Timer'
+import { FreeCells } from '../modules/FreeCells'
 
 let template = `
 <div class="game">
@@ -13,7 +20,7 @@ let template = `
 
     <div class="game-top">
         <div class="piles">
-            <pile v-for="(p, i) in game.piles.piles" 
+            <pile v-for="(p, i) in piles" 
                 :pile="p" 
                 :key="i"
                 @addCard="addCardToPile"                
@@ -23,7 +30,7 @@ let template = `
         <button @click="undo" :disabled="!canUndo">Undo</button>
 
         <div class="freecells">
-            <freecell v-for="(f, i) in game.freeCells.freeCells" 
+            <freecell v-for="(f, i) in freeCells" 
                 :freeCell="f" 
                 :key="i"
                 @addCard="addCardToFreeCell" 
@@ -40,6 +47,11 @@ let template = `
         @cardDoubleClicked="handleDoubleClickedCardOnColumn"        
     />
 
+    <modal :show="showPopup" @onClose="closePopup">
+        <div class="popup-title">{{ popupTitle }}</div>
+        <button @click="reset">{{ playAgainTxt }}</button>
+    </modal>
+
 </div>
 `
 
@@ -54,12 +66,18 @@ export const game = {
         }
     },
     computed : {
-        canUndo: function(){ return this.game.gameStateManager && this.game.gameStateManager.canUndo() }
+        canUndo: function(){ return this.game.gameStateManager && this.game.gameStateManager.canUndo() },
+        showPopup: function(){ return this.game.isGameOver() || this.game.isWon() },
+        popupTitle: function(){ return this.game.isWon() ? 'You won this game !' : 'You lost this game...'},
+        playAgainTxt: function(){ return this.game.isWon() ? 'Restart' : 'Try again'},
+        piles: function(){ return this.game.piles.piles},
+        freeCells: function(){ return this.game.freeCells.freeCells},
     },
     components : {
         pile,
         freecell,
-        field
+        field,
+        modal
     },
     methods: {
         cardDraggedFromField: function(card: Card, col: Column){
@@ -108,6 +126,12 @@ export const game = {
         undo(){
             console.log('UI:undo')
             this.game.undo();
+        },
+        closePopup(){
+            console.log('method call closePopup')
+        },
+        reset(){
+            this.$emit('reset')
         }
     }
 };

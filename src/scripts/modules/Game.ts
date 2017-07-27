@@ -23,7 +23,7 @@ export class Game {
     private _freeCells: FreeCells;
     private _gameStateManager: GameStateManager;
 
-	constructor(deck = new Deck(), field = new Field(), piles = new Piles(), freeCells = new FreeCells(), timer = new Timer(), autostart = false, statistics = new Statistics() ) {
+	constructor(autoInit = true, deck = new Deck(), field = new Field(), piles = new Piles(), freeCells = new FreeCells(), timer = new Timer(), autostart = false, statistics = new Statistics() ) {
         this.deck = deck;
         this.field = field;
         this.piles = piles;
@@ -32,6 +32,7 @@ export class Game {
         this.timer = new Timer();
         this.gameStateManager = new GameStateManager(this)
         if(autostart){ this.start() }
+        if(autoInit){ this.init() }
     }
 
     // State //
@@ -43,6 +44,10 @@ export class Game {
         this.deck.cards.forEach( (card, i) => {
             this.field.getColumn( i % this.field.getNbColumn() ).addCard( card )
         })
+    }
+
+    reset(){
+        console.log('reset game', this)
     }
 
     autoFillPiles(){
