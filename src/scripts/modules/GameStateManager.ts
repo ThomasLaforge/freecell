@@ -70,7 +70,7 @@ export class Operation {
 
 export class GameStateManager {
 
-    private slots: Operation[];
+    public slots: Operation[];
     public game: Game;
 
     constructor(game: Game){

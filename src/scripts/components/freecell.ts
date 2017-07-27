@@ -6,7 +6,7 @@ let template = `
     @dragover.prevent
     @drop="onDropCard"
     @dragenter="onDragEnterCard"
->    
+>
     <card v-if="card" 
         :card="card"
         :isDraggable="true"

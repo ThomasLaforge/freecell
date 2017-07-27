@@ -2,8 +2,9 @@ export class Timer {
 
     private _startTime:number;
 
-    constructor(autoStart: boolean = true){
-        if(autoStart){
+    constructor(autoStart: boolean = false){
+		this.startTime = null
+		if(autoStart){
 			this.start();
 		}
     }
@@ -16,7 +17,7 @@ export class Timer {
 	}
 
 	getTimeSinceStart() : number { //Time in miliseconds
-		return Date.now() - this.startTime;
+		return this.startTime ? Date.now() - this.startTime : null;
 	}
 
     /**

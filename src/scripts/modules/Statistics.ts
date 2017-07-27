@@ -36,10 +36,14 @@ export class Statistics {
 
     public historic: HistoricLine[]
     public gamePrefix: string
+    public nextKey: number
 
     constructor(gamePrefix = 'vue-freecell-game-'){
         this.gamePrefix = gamePrefix
         this.updateHistoric()
+        console.log('initial historic', this.historic)
+        console.log('win', this.getNbWonGame(), this.getWinRatio())
+        console.log('lost', this.getNbLostGame(), this.getLoseRatio())
     }
 
     updateHistoric(){
@@ -52,13 +56,19 @@ export class Statistics {
             i++
             nextSaveSlot = localStorage.getItem(this.gamePrefix + i)
         }
+        this.nextKey = i
+    }
+
+    addGame(initialField: Field){
+        localStorage.setItem(this.gamePrefix + this.nextKey, JSON.stringify( new HistoricLine( initialField, Date.now() ) ))
+        this.nextKey++
     }
 
     getNbWonGame(){
-        return this.historic.filter( g => { g.end }).length
+        return this.historic.filter( g => { return g.end }).length
     }
     getNbLostGame(){
-        return this.historic.filter( g => { !g.end }).length
+        return this.historic.filter( g => { return !g.end }).length
     }
     getNbGame(){
         return this.historic.length
@@ -66,12 +76,16 @@ export class Statistics {
     getWinRatio(){
         return this.getNbWonGame() / this.getNbGame()
     }
-    getLoseRation(){
+    getLoseRatio(){
         return this.getNbLostGame() / this.getNbGame()
     }
 
     reset(){
-        localStorage.clear()
+        let i = 0;
+        while( localStorage.getItem(this.gamePrefix + i) && i < MAX_SAVE_SLOTS) {
+            localStorage.removeItem(this.gamePrefix + i)
+            i++
+        }
     }
     
 }

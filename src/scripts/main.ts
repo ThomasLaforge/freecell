@@ -39,12 +39,6 @@ let app = new Vue({
     methods: {
         reset(){
             // this.game.reset();
-            this.game.deck = new Deck();
-            this.game.field = new Field();
-            this.game.freeCells = new FreeCells();
-            this.game.timer = new Timer();
-            this.game.piles = new Piles();
-            this.game.init()
             console.log('main:reset', this.game)
         }
 

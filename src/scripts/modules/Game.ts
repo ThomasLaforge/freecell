@@ -11,6 +11,7 @@
     import { Timer }        from './Timer';
     import { NB_COLUMN, NB_FREE_CELLS, NB_PILE } from './Freecell';
     import { Statistics }   from './Statistics'
+    import * as _ from 'lodash'
 // -------
 
 export class Game {
@@ -22,6 +23,8 @@ export class Game {
     private _piles: Piles;
     private _freeCells: FreeCells;
     private _gameStateManager: GameStateManager;
+    private _started: boolean
+    public initialField: Field
 
 	constructor(autoInit = true, deck = new Deck(), field = new Field(), piles = new Piles(), freeCells = new FreeCells(), timer = new Timer(), autostart = false, statistics = new Statistics() ) {
         this.deck = deck;
@@ -31,6 +34,7 @@ export class Game {
         this.statistics = statistics;
         this.timer = new Timer();
         this.gameStateManager = new GameStateManager(this)
+        this._started = false;
         if(autostart){ this.start() }
         if(autoInit){ this.init() }
     }
@@ -38,16 +42,24 @@ export class Game {
     // State //
     start(){
         this.timer.start();
+        this._started = true;
     }
 
     init(){
         this.deck.cards.forEach( (card, i) => {
             this.field.getColumn( i % this.field.getNbColumn() ).addCard( card )
         })
+        this.initialField = _.cloneDeep(this.field)        
     }
 
     reset(){
-        console.log('reset game', this)
+        console.log('reset game')
+        this.deck = new Deck();
+        this.field = new Field();
+        this.freeCells = new FreeCells();
+        this.timer = new Timer();
+        this.piles = new Piles();
+        this.init()
     }
 
     autoFillPiles(){
@@ -178,6 +190,10 @@ export class Game {
             try {
                 to.addCard(cards)
                 from.removeCard(cards);
+                if(!this._started){
+                    this.start()
+                    this.statistics.addGame(this.initialField)
+                }
                 if(!undo) {
                     console.log('cards', cards, cards.length, cards.length > 1 && cards)
                     this.gameStateManager.addSlot(from, to, cards.length > 1 && cards )
@@ -263,6 +279,7 @@ export class Game {
         if(isGameOver) {
             this.field.columns.forEach( cDrag => {
                 this.field.columns.forEach( cDrop => {
+                    // if( cDrop.isCardPlayable(cDrag.bottomCard) && this.gameStateManager.currentSlot !== this.gameStateManager.slots[this.gameStateManager.slots.length - 1 - 1].getReverseOperation()){
                     if( cDrop.isCardPlayable(cDrag.bottomCard) ){
                         isGameOver = false
                     }

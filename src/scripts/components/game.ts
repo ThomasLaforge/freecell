@@ -2,6 +2,7 @@ import { pile } from './pile'
 import { field } from './field'
 import { freecell } from './freecell'
 import { modal } from './modal'
+import { timer } from './timer'
 import { Column } from '../modules/Column'
 import { Pile } from '../modules/Pile'
 import { FreeCell } from '../modules/FreeCells'
@@ -15,7 +16,7 @@ import { FreeCells } from '../modules/FreeCells'
 
 let template = `
 <div class="game">
-    <button @click="reset">{{ playAgainTxt }}</button>
+    <timer :timer="chrono" />
 
     <div class="game-top">
         <div class="piles">
@@ -71,13 +72,15 @@ export const game = {
         playAgainTxt: function(){ return this.game.isWon() ? 'Restart' : 'Try again'},
         piles: function(){ return this.game.piles.piles},
         freeCells: function(){ return this.game.freeCells.freeCells},
-        columns: function(){ return this.game.field.columns }
+        columns: function(){ return this.game.field.columns },
+        chrono: function(){ return this.game.timer }
     },
     components : {
         pile,
         freecell,
         field,
-        modal
+        modal,
+        timer
     },
     methods: {
         cardDraggedFromField: function(card: Card, col: Column){
@@ -131,7 +134,7 @@ export const game = {
             console.log('method call closePopup')
         },
         reset(){
-            this.$emit('reset')
+            this.game.reset()
         }
     }
 };
