@@ -28,18 +28,21 @@ export class FreeCell implements DraggableZone, PlayableZone {
     }
 }
 
-let initialFreeCells: FreeCell[] = [];
-for (let i = 0; i < NB_FREE_CELLS; i++) {
-    initialFreeCells.push(new FreeCell())
-    
-}
-
 export class FreeCells {
 
     public freeCells: FreeCell[]
     
-    constructor(freeCells = initialFreeCells ){
-        this.freeCells = freeCells
+    constructor(freeCells?: FreeCell[]){
+        if(!freeCells){
+            let initialFreeCells: FreeCell[] = [];
+            for (let i = 0; i < NB_FREE_CELLS; i++) {
+                initialFreeCells.push(new FreeCell())
+            }
+            this.freeCells = initialFreeCells
+        }
+        else{
+            this.freeCells = freeCells
+        }
     }
 
     getNbFree(){

@@ -7,8 +7,8 @@ let template = `
     @drop="onDropCard"
     @dragenter="onDragEnterCard"
 >    
-    <card v-if="freeCell.card" 
-        :card="freeCell.card"
+    <card v-if="card" 
+        :card="card"
         :isDraggable="true"
         @cardDragged="sendCardDragged"
         @cardDoubleCkicked="handleCardDoubleCkicked"
@@ -24,6 +24,7 @@ export const freecell = {
         }
     },
     computed : {
+        card: function(){ return this.freeCell.card}
     },
     components : {
         card

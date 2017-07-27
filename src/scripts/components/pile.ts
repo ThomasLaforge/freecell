@@ -8,13 +8,13 @@ let template = `
     @drop="onDropCard"
     @dragenter="onDragEnterCard"
 >
-    <div v-if="pile && pile.value > 0">
+    <div v-if="pile && pileValue > 0">
         <card 
             :card="card"
             :isDraggable="false" 
         />
     </div>
-    <div v-if="pile && pile.value === 0" v-html="familySymbole" :class="familyColorClass" />
+    <div v-if="pile && pileValue === 0" v-html="familySymbole" :class="familyColorClass" />
 
 </div>
 `
@@ -29,8 +29,8 @@ export const pile = {
     computed : {
         familySymbole : function(){ return getFamilySymbole(this.pile.family) },
         familyColorClass : function(){ return 'pile-empty-' + this.card.colorTextLowerCase },
-        card: function() { return new Card(this.pile.value, this.pile.family) }
-        
+        card: function() { return new Card(this.pile.value, this.pile.family) },
+        pileValue: function(){ return this.pile.value }        
     },
     components : {
         card

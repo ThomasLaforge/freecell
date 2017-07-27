@@ -15,8 +15,7 @@ import { FreeCells } from '../modules/FreeCells'
 
 let template = `
 <div class="game">
-    <div>Game over : {{ game.isGameOver() }}</div>
-    <div>Game is won : {{ game.isWon() }}</div>
+    <button @click="reset">{{ playAgainTxt }}</button>
 
     <div class="game-top">
         <div class="piles">
@@ -41,7 +40,7 @@ let template = `
     </div>
 
     <field 
-        :columns="game.field.columns" 
+        :columns="columns" 
         @addCard="addCardToField" 
         @dragCard="cardDraggedFromField"
         @cardDoubleClicked="handleDoubleClickedCardOnColumn"        
@@ -72,6 +71,7 @@ export const game = {
         playAgainTxt: function(){ return this.game.isWon() ? 'Restart' : 'Try again'},
         piles: function(){ return this.game.piles.piles},
         freeCells: function(){ return this.game.freeCells.freeCells},
+        columns: function(){ return this.game.field.columns }
     },
     components : {
         pile,
